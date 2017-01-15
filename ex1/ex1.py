@@ -8,7 +8,7 @@ def simpleMatrix():
 	print(n)
 
 def diagonalMatrix():
-	np.fill_diagonal(n,1) #TODO
+	k = np.fill_diagonal(n,1) #TODO
 	print(n)
 
 def plotData():
@@ -18,10 +18,18 @@ def plotData():
 	## add labels
 
 def plotTheta():
-	# TODO: add theta line, labels etc
-	plt.figure(figsize=(10,10))
+	x = np.linspace(data[:,0].min(), data[:,0].max(), 100) #Returns evenly spaced numbers over specified interval, to make the theta line fit the scatter plot dimensions
+	y = theta[0, 0] + (theta[0, 1] * x)
+
 	plt.scatter(data[:,0], data[:,1])
-	plt.line
+	plt.plot(x, y)
+	plt.show()
+	## add labels etc
+
+def plotCost():
+	x = np.arange(1500)
+	y = j_history
+	plt.plot(x, y)
 	plt.show()
 
 def featureNormalisation(data):
@@ -54,15 +62,15 @@ def debugPrintParams():
 	print "------------------------------"
 
 def debugGDShape(theta, hypothesis, difference):
-	print "theta shape:"
+	print "Theta Shape:"
 	print(theta.shape)
-	print "hypothesis:"
+	print "Hypothesis:"
 	print(hypothesis.shape)
-	print "difference:"
+	print "Difference:"
 	print(difference.shape)
 
 def debugGDIters(theta):
-	print "theta shape:"
+	print "Theta Shape:"
 	print(theta.shape)
 	print "Iteration: ", i
 	print(theta) 
@@ -74,21 +82,27 @@ def computeCost(x, y, theta):
 	sq_error = np.power((hypothesis - y), 2)
 	return np.sum(sq_error) / (2*m) #TODO
 
+
 ############## THIS DOES NOT WORK YET ####################
 def gradientDescent(x, y, theta, alpha, iters):
 	m = len(y) # number of training examples
-	J_history = np.zeros((iters, 2))
+	j_history = np.zeros(iters)
+	temp_theta = np.matrix(np.zeros(theta.shape))
 	print "---running gradient descent---"	
 
 	for i in range(iters): 
-		hypothesis = x * theta.T
-		difference = hypothesis - y
+		difference = (x * theta.T) - y
 		#debugGDShape(theta, hypothesis, difference)
-		theta = theta - ((alpha/m) * np.sum(np.multiply(x, difference)))
-		J_history[i] = computeCost(x, y, theta)
+		temp_theta[:,[0]] = theta[:,[0]] - ((alpha / m) * np.sum(np.multiply(x[:,[0]], difference)))
+		temp_theta[:,[1]] = theta[:,[1]] - ((alpha / m) * np.sum(np.multiply(x[:,[1]], difference)))
+		theta = temp_theta
+		j_history[i] = computeCost(x, y, theta)
 		#debugGDIters(theta)
 		#input('Press enter to continue: ')
-	return theta, J_history
+	return theta, j_history
+
+	#Issues:
+	#Same values for theta[0], theta[1]. Need to compute them separately?
 
 
 ##########################################
@@ -108,14 +122,14 @@ def gradientDescent(x, y, theta, alpha, iters):
 
 data = np.loadtxt("ex1data1.txt", delimiter=",")
 # printTrainingData()
-# plotData()
+#plotData()
 
 ###########################################
 # Part 5: Feature normalisation: % Instructions: First, for each feature dimension, compute the mean of the feature and subtract it from the dataset, storing the mean value in mu. Next, compute the standard deviation of each feature and divide each feature by it's standard deviation, storing the standard deviation in sigma. 
 # Note that X is a matrix where each column is a feature and each row is an example. You need to perform the normalization separately for each feature.  Hint: You might find the 'mean' and 'std' functions useful.
 ###########################################
 
-norm_data = featureNormalisation(data)
+#norm_data = featureNormalisation(data)
 #printNormalisedData()
 
 ###########################################
@@ -143,27 +157,32 @@ j = computeCost(x, y, theta)
 
 print "Initial Computed Cost:" 
 print(j)
+print(j.shape)
 
 ##########################################
 # 3.2 Run gradient descent, print Theta Instructions: Perform a single gradient step on the parameter vector theta. 
 # Hint: While debugging, it can be useful to print out the values of the cost function (computeCost) and gradient here.
 ##########################################
 
-theta, J_history = gradientDescent(x, y, theta, alpha, iters)
+theta, j_history = gradientDescent(x, y, theta, alpha, iters)
 
 print "================================="
 print "Theta, found by gradient descent:" 
 print(theta)
 print(theta.shape)
 print "================================="
-print "J_history:"
-print(J_history)
+print "Cost:"
+print(j_history)
+print(j_history.shape)
 
 ##########################################
 # 3.3 Plot the linear fit
 ##########################################
 
-#plotTheta()
+plotTheta()
+
+plotCost()
+
 
 ##########################################
 # 3.4 predict values fro population sizes of 35000 and 70000
