@@ -76,14 +76,12 @@ def debugGDIters(theta):
 	print(theta) 
 
 def computeCost(x, y, theta):
-	#some issue with the way I'm handing matrix multiplication.Need to use numpy properly!
+
 	m = len(y)
 	hypothesis = x * theta.T
 	sq_error = np.power((hypothesis - y), 2)
 	return np.sum(sq_error) / (2*m) #TODO
 
-
-############## THIS DOES NOT WORK YET ####################
 def gradientDescent(x, y, theta, alpha, iters):
 	m = len(y) # number of training examples
 	j_history = np.zeros(iters)
@@ -121,7 +119,7 @@ def gradientDescent(x, y, theta, alpha, iters):
 ##########################################
 
 data = np.loadtxt("ex1data1.txt", delimiter=",")
-# printTrainingData()
+#printTrainingData()
 #plotData()
 
 ###########################################
