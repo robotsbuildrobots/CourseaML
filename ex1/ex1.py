@@ -18,7 +18,7 @@ def plotData():
 	## add labels
 
 def plotTheta():
-	x = np.linspace(data[:,0].min(), data[:,0].max(), 100) #Returns evenly spaced numbers over specified interval, to make the theta line fit the scatter plot dimensions
+	x = np.linspace(data[:,0].min(), data[:,0].max(), 100) #Returns evenly spaced numbers over the range covered by the data, to make the theta line fit the scatter plot dimensions
 	y = theta[0, 0] + (theta[0, 1] * x)
 
 	plt.scatter(data[:,0], data[:,1])
